@@ -1,43 +1,48 @@
-class PersStack:
+class StackNode:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+class PersistentStack:
     def __init__(self):
-        self.val = [None]
-        self.prev = [None]
-        self.index = 0
+        self.versions = {}
+        self.current_version = 0
+        
+    def push(self, value, version):
+        if version not in self.versions:
+            self.versions[version] = None
+        
+        new_node = StackNode(value)
+        new_node.next = self.versions[version] 
+        self.versions[version] = new_node 
+    
+    def pop(self, version):
+        if version not in self.versions or self.versions[version] is None:
+            return None
 
-    def push(self, version: int, value):
-        # if version more than last + 1
-        if version + 1 > len(self.prev):
-            self.prev.append(self.index)
-        else:
-            self.prev.append(version)
-        self.val.append(value)
-
-        self.index += 1
-
-    def pop(self, version: int):
-        if version > self.index:
-            prev_index = self.prev[-1]
-        else:
-            prev_index = self.prev[version]
-
-        self.val.append(self.val[prev_index])
-        self.prev.append(self.prev[prev_index])
-
-        return self.val[-1]
-
-    def size(self):
-        return len(self.prev)
-
-    def __str__(self):
-        for i in range(0, len(self.val)):
-            print(f"value {self.val[i]} prev {self.prev[i]}")
-
+        popped_value = self.versions[version].value
+        self.versions[version] = self.versions[version].next
+        return popped_value
+    
+    def print_stack(self, version):
+        if version not in self.versions or self.versions[version] is None:
+            print("Stack is empty.")
+            return
+        current_node = self.versions[version]
+        values = []
+        while current_node:
+            values.append(str(current_node.value))
+            current_node = current_node.next
+        
+        print("Stack version", version, ":", "->".join(values))
 
 
-pers_stack = PersStack()
+stack = PersistentStack()
+stack.push(1, 1)
+stack.push(2, 1)
+stack.push(3, 2)
+stack.push(4, 2)
+stack.print_stack(2)
 
-pers_stack.push(1, 3)
-pers_stack.push(2, 5)
-pers_stack.pop(2)
-pers_stack.push(3, 6)
-print(pers_stack.__str__())
+popped_value = stack.pop(2)
+print("Poped value", popped_value)
