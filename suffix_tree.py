@@ -69,24 +69,26 @@ if __name__ == '__main__':
     for i in range(n):
         arr[i] = A[i]
  
-
+    # creating Version-0
     root = Node()
     build(root, 0, n-1)
  
-
+    # storing root node for version-0
     version[0] = root
-
+ 
+    # upgrading to version-1
     version[1] = Node()
-    upgrade(version[0], version[1], 0, n-1, 0, -5)
-
+    upgrade(version[0], version[1], 0, n-1, 4, 1)
+ 
+    # upgrading to version-2
     version[2] = Node()
     upgrade(version[1], version[2], 0, n-1, 2, 5)
  
+    # querying in version-0
+    print("In version 0 , query(0,3) :",query(version[0], 0, n-1, 0, 3)) 
  
-    print("In version 0 , query(0,3) :",query(version[0], 0, n-1, 0, 4)) 
-
-
+    # querying in version-1
     print("In version 1 , query(0,4) :",query(version[1], 0, n-1, 0, 4)) 
  
-
+    # querying in version-2
     print("In version 2 , query(3,4) :",query(version[2], 0, n-1, 3, 4))
